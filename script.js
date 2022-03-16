@@ -79,14 +79,24 @@ container.addEventListener('click', (e) => {;
             }
             else if(e.target.textContent === "+/-"){
                 if(second !== ""){
-                    second = "-" + second;
+                    if(second[0] != "-"){
+                        second = "-" + second;
+                    }
+                    else{
+                        second = second.substring(1);
+                    }
                     equation.textContent = first + operator + second;
                 }
                 else if(operator !== ""){
                     ;
                 }
                 else if(first !== ""){
-                    first = "-" + first;
+                    if(first[0] != "-"){
+                        first = "-" + first;
+                    }
+                    else{
+                        first = first.substring(1);
+                    }
                     equation.textContent = first;
                 }
             }

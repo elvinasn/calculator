@@ -41,8 +41,10 @@ body::after{
     flex-wrap: wrap;
     border-radius: 25px;
     gap: 20px;
+    user-select: none;
 }
 .container__top{
+    user-select: none;
     height: 80px;
     padding: 20px;
     background-color: lightblue;

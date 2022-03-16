@@ -26,7 +26,6 @@ container.addEventListener('click', (e) => {;
             isFun = true;
         }
 
-
         if(result.textContent !== ""){
             if(isOper){
                 first = result.textContent;
@@ -35,11 +34,7 @@ container.addEventListener('click', (e) => {;
                 equation.textContent = first;
             }
             else{
-                first = "";
-                second = "";
-                operator = "";
-                lastClicked = "";
-                equation.textContent = "";
+                restart();
             }
             result.textContent = "";
         }
@@ -47,6 +42,10 @@ container.addEventListener('click', (e) => {;
         if(!isFun){
             if(!(isOper && first === "")){
                 equation.textContent += e.target.textContent;
+                if(equation.textContent.length > 23){
+                    restart();
+                    return;
+                }
                 if(isOper){
                     if(isOperator(lastClicked)){
                         operator = e.target.textContent;
@@ -57,9 +56,6 @@ container.addEventListener('click', (e) => {;
                             operator = e.target.textContent;
                         }
                         else{
-                            console.log(first);
-                            console.log(second);
-                            console.log(operator);
                             first = operate(first, second, operator);
                             operator = e.target.textContent;
                             second = "";
@@ -75,18 +71,24 @@ container.addEventListener('click', (e) => {;
                         second += e.target.textContent;
                     }
                 }
-                            
-
-            } 
+       } 
         }
         else{
             if(e.target.textContent === "C"){
-                equation.textContent = "";
-                first = "";
-                second = "";
-                operator = "";
-                lastClicked = "";
-                result.textContent = "";
+                restart();
+            }
+            else if(e.target.textContent === "+/-"){
+                if(second !== ""){
+                    second = "-" + second;
+                    equation.textContent = first + operator + second;
+                }
+                else if(operator !== ""){
+                    ;
+                }
+                else if(first !== ""){
+                    first = "-" + first;
+                    equation.textContent = first;
+                }
             }
             else if(e.target.textContent === "DEL"){
                 equation.textContent = equation.textContent.substring(0, equation.textContent.length - 1);
@@ -112,10 +114,18 @@ container.addEventListener('click', (e) => {;
     }
 });
 
+function restart(){
+    equation.textContent = "";
+    first = "";
+    second = "";
+    operator = "";
+    lastClicked = "";
+    result.textContent = "";
+}
 
 function operate(a, b, operator){
-    a = Number(a);
-    b = Number(b);
+    a = +a;
+    b = +b;
     
     if(operator === '+'){
         return add(a, b);

@@ -78,7 +78,7 @@ body::after{
 }
 @media all and (max-width: 500px){
     .container{
-        width:340px;
+        width:300px;
     }
     .container__button{
         width: 60px;

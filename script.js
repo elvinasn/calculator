@@ -12,7 +12,7 @@ let isNum;
 let isFun;
 let normalKey;
 
-container.addEventListener("clicfk", (e) => {
+container.addEventListener("click", (e) => {
   if (e.target.classList.contains("container__button")) {
     isOper = false;
     isNum = false;
@@ -42,12 +42,15 @@ window.addEventListener("keydown", (e) => {
     isOper = true;
     normalKey = true;
     clickedNow = e.key;
-  } else if (e.key == "=" || e.key == "Backspace" || e.key == "Escape") {
+  } else if (e.key == "=" || e.key == "Backspace" || e.key == "Escape" || e.key == "Enter") {
     isFun = true;
     normalKey = true;
     switch (e.key) {
       case "=":
         clickedNow = e.key;
+        break;
+      case "Enter":
+        clickedNow = "=";
         break;
       case "Backspace":
         clickedNow = "DEL";

@@ -5,126 +5,174 @@ let first = "";
 let second = "";
 let operator = "";
 let lastClicked = "";
+let clickedNow;
 
 let isOper;
 let isNum;
 let isFun;
+let normalKey;
 
-container.addEventListener('click', (e) => {;
-    if(e.target.classList.contains("container__button")){
-        if(e.target.textContent === "=" && lastClicked === "="){
-            return;
-        }
+container.addEventListener('click', e => {
+    if (e.target.classList.contains("container__button")) {
         isOper = false;
         isNum = false;
         isFun = false;
-        if(e.target.classList.contains("oper")){
+        if (e.target.classList.contains("oper")) {
             isOper = true;
-        } else if( e.target.classList.contains("num")){
+        } else if (e.target.classList.contains("num")) {
             isNum = true;
-        } else{
+        } else {
             isFun = true;
         }
+        clickedNow = e.target.textContent;
+        calculate(e)
+    }
+});
 
-        if(result.textContent !== ""){
-            if(isOper){
+window.addEventListener('keydown', e => {
+    isOper = false;
+    isNum = false;
+    isFun = false;
+    normalKey = false;
+    if (0 <= e.key && e.key <= 9 || e.key == ".") {
+        isNum = true;
+        normalKey = true;
+        clickedNow = e.key;
+    }
+    else if (e.key == "+" || e.key == "-" || e.key == "*" || e.key == "/") {
+        isOper = true;
+        normalKey = true;
+        clickedNow = e.key;
+    }
+    else if (e.key == "=" || e.key == "Backspace" || e.key == "Escape") {
+        isFun = true;
+        normalKey = true;
+        switch (e.key) {
+            case "=":
+                clickedNow = e.key;
+                break;
+            case "Backspace":
+                clickedNow = "DEL";
+                break;
+            case "Escape":
+                clickedNow = "C";
+                break;
+            default:
+                break;
+        }
+    }
+    if (normalKey) {
+        calculate(e);
+    }
+});
+
+
+function calculate(e) {
+    {
+        if (clickedNow === "=" && lastClicked === "=") {
+            return;
+        }
+        if (result.textContent !== "") {
+            if (isOper) {
                 first = result.textContent;
                 second = "";
                 operator = "";
                 equation.textContent = first;
             }
-            else{
+            else {
                 restart();
             }
             result.textContent = "";
         }
 
-        if(!isFun){
-            if(!(isOper && first === "")){
-                equation.textContent += e.target.textContent;
-                if(equation.textContent.length > 23){
+        if (!isFun) {
+            if (!(isOper && first === "")) {
+                equation.textContent += clickedNow;
+                if (equation.textContent.length > 23) {
                     restart();
                     return;
                 }
-                if(isOper){
-                    if(isOperator(lastClicked)){
-                        operator = e.target.textContent;
+                if (isOper) {
+                    if (isOperator(lastClicked)) {
+                        operator = clickedNow;
                         equation.textContent = first + operator;
                     }
-                    else{
-                        if(operator == ""){
-                            operator = e.target.textContent;
+                    else {
+                        if (operator == "") {
+                            operator = clickedNow;
                         }
-                        else{
+                        else {
                             first = operate(first, second, operator);
-                            operator = e.target.textContent;
+                            operator = clickedNow;
                             second = "";
                             equation.textContent = first + operator;
                         }
-                    }     
-                }
-                else{
-                    if(operator ==""){
-                        first += e.target.textContent;
-                    }
-                    else{
-                        second += e.target.textContent;
                     }
                 }
-       } 
+                else {
+                    if (operator == "") {
+                        first += clickedNow;
+                    }
+                    else {
+                        second += clickedNow;
+                    }
+                }
+            }
         }
-        else{
-            if(e.target.textContent === "C"){
+        else {
+            if (clickedNow === "C") {
                 restart();
             }
-            else if(e.target.textContent === "+/-"){
-                if(second !== ""){
-                    if(second[0] != "-"){
+            else if (clickedNow === "+/-") {
+                if (second !== "") {
+                    if (second[0] != "-") {
                         second = "-" + second;
                     }
-                    else{
+                    else {
                         second = second.substring(1);
                     }
                     equation.textContent = first + operator + second;
                 }
-                else if(operator !== ""){
+                else if (operator !== "") {
                     ;
                 }
-                else if(first !== ""){
-                    if(first[0] != "-"){
+                else if (first !== "") {
+                    if (first[0] != "-") {
                         first = "-" + first;
                     }
-                    else{
+                    else {
                         first = first.substring(1);
                     }
                     equation.textContent = first;
                 }
             }
-            else if(e.target.textContent === "DEL"){
+            else if (clickedNow === "DEL") {
                 equation.textContent = equation.textContent.substring(0, equation.textContent.length - 1);
-                if(second !== ""){
+                if (second !== "") {
                     second = second.substring(0, second.length - 1);
                 }
-                else if(operator!== ""){
+                else if (operator !== "") {
                     operator = "";
                 }
-                else{
+                else {
                     first = first.substring(0, first.length - 1);
                 }
             }
-            else if(e.target.textContent ==="="){
-                if(result.textContent === ""){
-                    if(first !== "" && second !== "" && operator !== ""){
-                        result.textContent = operate(first, second, operator);
+            else if (clickedNow === "=") {
+                if (result.textContent === "") {
+                    if (first !== "" && second !== "" && operator !== "") {
+                        result.textContent = Math.round(operate(first, second, operator) * 1000) / 1000;
                     }
                 }
             }
         }
-        lastClicked = e.target.textContent;
+        lastClicked = clickedNow;
     }
-});
+}
 
-function restart(){
+
+
+function restart() {
     equation.textContent = "";
     first = "";
     second = "";
@@ -133,42 +181,42 @@ function restart(){
     result.textContent = "";
 }
 
-function operate(a, b, operator){
+function operate(a, b, operator) {
     a = +a;
     b = +b;
-    
-    if(operator === '+'){
+
+    if (operator === '+') {
         return add(a, b);
     }
-    else if(operator === '-'){
+    else if (operator === '-') {
         return subtract(a, b)
     }
-    else if(operator === '*'){
+    else if (operator === '*') {
         return multiply(a, b)
     }
-    else if(operator === '/'){
+    else if (operator === '/') {
         return divide(a, b);
     }
 }
 
-function add(a, b){
+function add(a, b) {
     return a + b;
 }
 
-function subtract(a, b){
+function subtract(a, b) {
     return a - b;
 }
 
-function multiply(a, b){
+function multiply(a, b) {
     return a * b;
 }
 
-function divide(a, b){
-    if(b == 0){
+function divide(a, b) {
+    if (b == 0) {
         return "ERROR";
     }
     return a / b;
 }
-function isOperator(a){
+function isOperator(a) {
     return a == "-" || a == "+" || a == "/" || a == "*";
 }
